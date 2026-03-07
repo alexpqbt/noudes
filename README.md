@@ -13,7 +13,7 @@ Features that I want this thing to have:
 - [x] save file to storage
 - [x] download file from storage
 - [x] shareable download link
-- [ ] add time limit to uploaded files so the storage max itself out
+- [ ] add time limit to uploaded files so the storage wont max itself out
 - [ ] system "hardening" (sus ahh statement)
 - [ ] add AI because it is the new tech /j
 - [ ] other features if i want to look busy or smth idk
