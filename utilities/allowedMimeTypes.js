@@ -1,4 +1,4 @@
-export default allowedMimeTypes = [
+const allowedMimeTypes = [
   "application/epub+zip",
   "application/json",
   "application/msword",
@@ -35,3 +35,5 @@ export default allowedMimeTypes = [
   "video/webm",
   "video/x-msvideo",
 ];
+
+export default allowedMimeTypes;
