@@ -1,43 +1,12 @@
 import { fileTypeFromFile } from "file-type";
 import express from "express";
-import multer from "multer";
-import fs from "fs";
 import path from "path";
 import randomCharacters from "../utilities/randomCharacters.js";
-import allowedMimeTypes from "../utilities/allowedMimeTypes.js";
+import multerConfig from "../configs/multerConfig.js";
+import { getFilenamesSync } from "../utilities/filesystem.js";
 
 const router = express.Router();
-
-const storage = multer.diskStorage({
-  destination: function (req, res, cb) {
-    const downloadUrl = req.downloadUrl;
-    const directory = `uploads/${downloadUrl}`;
-    fs.mkdirSync(directory, { recursive: true });
-    cb(null, directory);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (allowedMimeTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(
-      new Error(
-        "Invalid file type. Only images, videos, and documents are allowed.",
-      ),
-      false,
-    );
-  }
-};
-
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 25 * 1000 * 1000,
-    files: 10,
-  },
-});
+const upload = multerConfig();
 
 router.post(
   "/",
@@ -54,10 +23,7 @@ router.post(
 router.get("/:downloadUrl", function (req, res, next) {
   const directory = path.join("uploads", req.params.downloadUrl);
 
-  let files = [];
-  if (fs.existsSync(directory)) {
-    files = fs.readdirSync(directory);
-  }
+  let files = getFilenamesSync(directory);
 
   res.render("download", {
     title: "Download file",
