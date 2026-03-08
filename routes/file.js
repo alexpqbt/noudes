@@ -3,7 +3,8 @@ import express from "express";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-import randomCharacters from "../utilities/randomString.js";
+import randomCharacters from "../utilities/randomCharacters.js";
+import allowedMimeTypes from "../utilities/allowedMimeTypes.js";
 
 const router = express.Router();
 
@@ -16,7 +17,27 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (allowedMimeTypes.includes(file.mimetypes)) {
+    cb(null, true);
+  } else {
+    cb(
+      new Error(
+        "Invalid file type. Only images, videos, and documents are allowed.",
+      ),
+      false,
+    );
+  }
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 25 * 1000 * 1000,
+    files: 10,
+  },
+});
 
 router.post(
   "/",
