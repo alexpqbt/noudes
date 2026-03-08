@@ -45,7 +45,7 @@ router.post(
     req.downloadUrl = randomCharacters(5);
     next();
   },
-  upload.array("uploaded_file", 10),
+  upload.array("uploaded_file"),
   function (req, res, next) {
     res.redirect(`/file/${req.downloadUrl}`);
   },
