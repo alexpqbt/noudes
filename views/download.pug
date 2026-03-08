@@ -1,6 +1,9 @@
 extends layout
 
 block content
-  h1 Download file by clicking on the button below
-  button#download-btn Download
+  ul#files
+    each file in files
+      li 
+        p= file 
+        button#download-btn(data-file=file) Download
   script(src="/javascripts/handleDownload.js") 

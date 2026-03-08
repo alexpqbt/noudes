@@ -2,5 +2,5 @@ extends layout
 
 block content
   form(action="/file", method="post", enctype="multipart/form-data") 
-    input#file(type="file", name="uploaded_file")
+    input#file(type="file", name="uploaded_file", multiple)
     button(type="submit") Submit
