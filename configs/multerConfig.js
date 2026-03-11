@@ -25,7 +25,7 @@ export const fileFilter = (req, file, cb) => {
 };
 
 export const limits = {
-  fileSize: 25 * 1000 * 1000,
+  fileSize: 25 * 1024 * 1024,
   files: 10,
 };
 
