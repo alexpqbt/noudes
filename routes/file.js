@@ -4,9 +4,10 @@ import path from "path";
 import randomCharacters from "../utilities/randomCharacters.js";
 import multerConfig from "../configs/multerConfig.js";
 import { getFilenamesSync } from "../utilities/filesystem.js";
+import { MulterError } from "multer";
 
 const router = express.Router();
-const upload = multerConfig();
+const upload = multerConfig().array("uploaded_file");
 
 router.post(
   "/",
@@ -14,9 +15,22 @@ router.post(
     req.downloadUrl = randomCharacters(5);
     next();
   },
-  upload.array("uploaded_file"),
   function (req, res, next) {
-    res.redirect(`/file/${req.downloadUrl}`);
+    upload(req, res, function (err) {
+      let errorMessage = null;
+
+      if (err instanceof MulterError) {
+        errorMessage = `Upload Error: ${err.message}`;
+      } else if (err) {
+        errorMessage = err.message;
+      }
+
+      if (errorMessage) {
+        return res.render("index", { error: errorMessage });
+      }
+
+      res.redirect(`/file/${req.downloadUrl}`);
+    });
   },
 );
 

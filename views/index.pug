@@ -3,4 +3,11 @@ extends layout
 block content
   form(action="/file", method="post", enctype="multipart/form-data") 
     input#file(type="file", name="uploaded_file", multiple)
+    ul#file-list
     button(type="submit") Submit
+
+  if error
+    div.error-box
+      p= error
+
+  script(src="/javascripts/handleUpload.js") 
