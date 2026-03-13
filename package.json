@@ -8,11 +8,11 @@
     "dev": "DEBUG=myapp:* nodemon"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "cookie-parser": "~1.4.7",
     "debug": "~2.6.9",
-    "express": "~4.16.1",
+    "express": "~4.16.4",
     "express-validator": "^7.3.1",
-    "file-type": "^21.3.0",
+    "file-type": "^21.3.2",
     "http-errors": "~1.6.3",
     "mime-types": "^3.0.2",
     "morgan": "~1.9.1",
