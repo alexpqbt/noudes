@@ -70,9 +70,13 @@ router.get("/:downloadUrl", (req, res, next) => {
 });
 
 router.get("/:downloadUrl/:filename/download", async (req, res, next) => {
-  const file = `uploads/${req.params.downloadUrl}/${req.params.filename}`;
-  const type = await fileTypeFromFile(file);
-  res.download(file, `${req.params.filename}.${type.ext}`);
+  try {
+    const file = `uploads/${req.params.downloadUrl}/${req.params.filename}`;
+    const type = await fileTypeFromFile(file);
+    res.download(file, `${req.params.filename}.${type.ext}`);
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;
