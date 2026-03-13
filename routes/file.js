@@ -3,7 +3,11 @@ import express from "express";
 import path from "path";
 import randomCharacters from "../utilities/randomCharacters.js";
 import multerConfig from "../configs/multerConfig.js";
-import { getFilenamesSync } from "../utilities/filesystem.js";
+import {
+  getFilenamesSync,
+  cleanupFiles,
+  validateUploadedFiles,
+} from "../utilities/filesystem.js";
 import { MulterError } from "multer";
 
 const router = express.Router();
@@ -11,25 +15,21 @@ const upload = multerConfig().array("uploaded_file");
 
 router.post(
   "/",
-  function (req, res, next) {
+  (req, res, next) => {
     req.downloadUrl = randomCharacters(5);
     next();
   },
-  function (req, res, next) {
-    upload(req, res, function (err) {
-      let errorMessage = null;
-
-      if (err instanceof MulterError) {
-        errorMessage = `Upload Error: ${err.message}`;
-      } else if (err) {
-        errorMessage = err.message;
-      }
-
-      if (!req.files || req.files.length === 0) {
-        errorMessage = "Please upload at least one file.";
-      }
+  (req, res, next) => {
+    upload(req, res, async (err) => {
+      const errorMessage =
+        err instanceof MulterError ? `Upload Error: ${err.message}`
+          : err                    ? err.message
+          : !req.files?.length     ? "Upload at least one file."
+          : await validateUploadedFiles(req.files);
 
       if (errorMessage) {
+        const directory = path.join("uploads", req.downloadUrl);
+        cleanupFiles(directory);
         return res.render("index", { error: errorMessage });
       }
 
