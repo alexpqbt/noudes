@@ -9,14 +9,25 @@ import {
   validateUploadedFiles,
 } from "../utilities/filesystem.js";
 import { MulterError } from "multer";
+import { param, validationResult } from "express-validator";
+
+const DIR_NAME_LENGTH = 5;
 
 const router = express.Router();
 const upload = multerConfig().array("uploaded_file");
 
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("error", { message: "Invalid URL." });
+  }
+  next();
+};
+
 router.post(
   "/",
   (req, res, next) => {
-    req.downloadUrl = randomCharacters(5);
+    req.downloadUrl = randomCharacters(DIR_NAME_LENGTH);
     next();
   },
   (req, res, next) => {
@@ -38,6 +49,14 @@ router.post(
   },
 );
 
+router.use(
+  "/:downloadUrl",
+  param("downloadUrl")
+    .isAlphanumeric()
+    .isLength({ min: DIR_NAME_LENGTH, max: DIR_NAME_LENGTH }),
+  handleValidationErrors,
+);
+
 router.get("/:downloadUrl", (req, res, next) => {
   const directory = path.join("uploads", req.params.downloadUrl);
 
@@ -50,7 +69,7 @@ router.get("/:downloadUrl", (req, res, next) => {
   });
 });
 
-router.get("/:downloadUrl/:filename/download", validateDownloadUrl, async (req, res, next) => {
+router.get("/:downloadUrl/:filename/download", async (req, res, next) => {
   const file = `uploads/${req.params.downloadUrl}/${req.params.filename}`;
   const type = await fileTypeFromFile(file);
   res.download(file, `${file}.${type.ext}`);
