@@ -38,7 +38,7 @@ router.post(
   },
 );
 
-router.get("/:downloadUrl", function (req, res, next) {
+router.get("/:downloadUrl", (req, res, next) => {
   const directory = path.join("uploads", req.params.downloadUrl);
 
   let files = getFilenamesSync(directory);
@@ -50,7 +50,7 @@ router.get("/:downloadUrl", function (req, res, next) {
   });
 });
 
-router.get("/:downloadUrl/:filename/download", async function (req, res, next) {
+router.get("/:downloadUrl/:filename/download", validateDownloadUrl, async (req, res, next) => {
   const file = `uploads/${req.params.downloadUrl}/${req.params.filename}`;
   const type = await fileTypeFromFile(file);
   res.download(file, `${file}.${type.ext}`);
