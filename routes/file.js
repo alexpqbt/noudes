@@ -25,6 +25,10 @@ router.post(
         errorMessage = err.message;
       }
 
+      if (!req.files || req.files.length === 0) {
+        errorMessage = "Please upload at least one file.";
+      }
+
       if (errorMessage) {
         return res.render("index", { error: errorMessage });
       }
