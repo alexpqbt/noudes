@@ -41,7 +41,7 @@ router.post(
       if (errorMessage) {
         const directory = path.join("uploads", req.downloadUrl);
         cleanupFiles(directory);
-        return res.render("index", { error: errorMessage });
+        return res.status(400).render("index", { error: errorMessage });
       }
 
       res.redirect(`/file/${req.downloadUrl}`);
