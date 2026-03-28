@@ -4,6 +4,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import { fileURLToPath } from "url";
+import { rateLimit } from "express-rate-limit";
 
 import indexRouter from "./routes/index.js";
 import fileRouter from "./routes/file.js";
@@ -18,6 +19,10 @@ const __dirname = path.dirname(__filename);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
+app.use(rateLimit({ 
+  windowMs: 5 * 60 * 1000,
+  limit: 50
+}));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

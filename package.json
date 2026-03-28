@@ -11,6 +11,7 @@
     "cookie-parser": "~1.4.7",
     "debug": "~2.6.9",
     "express": "~4.16.4",
+    "express-rate-limit": "^8.3.1",
     "express-validator": "^7.3.1",
     "file-type": "^21.3.2",
     "http-errors": "~1.6.3",
