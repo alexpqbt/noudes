@@ -10,6 +10,7 @@ import {
 } from "../utilities/filesystem.js";
 import { MulterError } from "multer";
 import { param, validationResult } from "express-validator";
+import fs from "fs/promises";
 
 const DIR_NAME_LENGTH = 5;
 
@@ -43,6 +44,12 @@ router.post(
         cleanupFiles(directory);
         return res.status(400).render("index", { error: errorMessage });
       }
+
+      const directory = path.join("uploads", req.downloadUrl);
+      await fs.writeFile(
+        path.join(directory, "meta.json"),
+        JSON.stringify({ createdAt: Date.now() })
+      );
 
       res.redirect(`/file/${req.downloadUrl}`);
     });

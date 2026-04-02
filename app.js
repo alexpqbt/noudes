@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
+import { startCleanupJob } from "./jobs/cleanup.job.js";
 
 import indexRouter from "./routes/index.js";
 import fileRouter from "./routes/file.js";
@@ -43,6 +44,9 @@ app.use("/file", fileRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
+// Cron job
+startCleanupJob();
 
 // error handler
 app.use(function (err, req, res, next) {
