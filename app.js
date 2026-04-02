@@ -20,10 +20,6 @@ const __dirname = path.dirname(__filename);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-app.use(rateLimit({ 
-  windowMs: 5 * 60 * 1000,
-  limit: 50
-}));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,7 +34,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", indexRouter);
-app.use("/file", fileRouter);
+app.use("/file", rateLimit({ windowMs: 5 * 60 * 1000, limit: 50 }), fileRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
