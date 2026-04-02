@@ -1,5 +1,7 @@
 const fileInput = document.getElementById("file");
 const fileList = document.getElementById("file-list");
+const form = document.querySelector("form");
+const submitBtn = document.querySelector("button[type='submit']");
 
 let dt = new DataTransfer();
 
@@ -40,3 +42,13 @@ window.removeFile = (index) => {
 
   renderList();
 };
+
+form.addEventListener("submit", () => {
+  if (dt.files.length === 0) {
+    e.preventDefault();
+    return;
+  }
+
+  submitBtn.ariaDisabled = true;
+  submitBtn.textContent = "Uploading...";
+})
