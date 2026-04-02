@@ -17,8 +17,10 @@ export function cleanupFiles(directory) {
 export async function validateUploadedFiles(files) {
   for (const file of files) {
     const type = await fileTypeFromFile(file.path);
-    if (!type || !allowedMimeTypes.includes(type.mime)) {
-      return `Rejected file: ${file.originalname} (detected: ${type?.mime ?? "unknown"})`;
+    const mime = type?.mime ?? file.mimetype;
+
+    if (!allowedMimeTypes.includes(mime)) {
+      return `Rejected file: ${file.originalname} (detected: ${mime ?? "unknown"})`;
     }
   }
   return null;
