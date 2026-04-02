@@ -4,7 +4,7 @@ import path from "path";
 import randomCharacters from "../utilities/randomCharacters.js";
 import multerConfig from "../configs/multerConfig.js";
 import {
-  getFilenamesSync,
+  getFilenames,
   cleanupFiles,
   validateUploadedFiles,
 } from "../utilities/filesystem.js";
@@ -64,10 +64,10 @@ router.use(
   handleValidationErrors,
 );
 
-router.get("/:downloadUrl", (req, res, next) => {
+router.get("/:downloadUrl", async (req, res, next) => {
   const directory = path.join("uploads", req.params.downloadUrl);
 
-  let files = getFilenamesSync(directory);
+  let files = await getFilenames(directory);
 
   res.render("download", {
     title: "Download file",

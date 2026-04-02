@@ -7,12 +7,12 @@ import path from "path"
 const UPLOADS_DIR = "uploads";
 const MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-export function getFilenamesSync(directoryPath) {
-  let files = [];
-  if (fs.existsSync(directoryPath)) {
-    files = fs.readdirSync(directoryPath).filter(file => file !== "meta.json");
+export async function getFilenames(directoryPath) {
+  if (!await fsPromise.access(directoryPath).then(() => true).catch(() => false)) {
+    return [];
   }
-  return files;
+  const files = await fsPromise.readdir(directoryPath);
+  return files.filter(file => file !== "meta.json");
 }
 
 export async function cleanupFiles(directory) {
