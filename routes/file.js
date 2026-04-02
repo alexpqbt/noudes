@@ -11,11 +11,12 @@ import {
 import { MulterError } from "multer";
 import { param, validationResult } from "express-validator";
 import fs from "fs/promises";
+import { promisify } from "util";
 
 const DIR_NAME_LENGTH = 5;
 
 const router = express.Router();
-const upload = multerConfig().array("uploaded_file");
+const uploadAsync = promisify(multerConfig().array("uploaded_file"));
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -25,36 +26,37 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-router.post(
-  "/",
-  (req, res, next) => {
-    req.downloadUrl = randomCharacters(DIR_NAME_LENGTH);
-    next();
-  },
-  (req, res, next) => {
-    upload(req, res, async (err) => {
-      const errorMessage =
-        err instanceof MulterError ? `Upload Error: ${err.message}`
-          : err                    ? err.message
-          : !req.files?.length     ? "Upload at least one file."
-          : await validateUploadedFiles(req.files);
+router.post("/", async (req, res) => {
+  req.downloadUrl = randomCharacters(DIR_NAME_LENGTH);
+  const directory = path.join("uploads", req.downloadUrl);
 
-      if (errorMessage) {
-        const directory = path.join("uploads", req.downloadUrl);
-        await cleanupFiles(directory);
-        return res.status(400).render("index", { error: errorMessage });
-      }
+  try {
+    await uploadAsync(req, res);
 
-      const directory = path.join("uploads", req.downloadUrl);
-      await fs.writeFile(
-        path.join(directory, "meta.json"),
-        JSON.stringify({ createdAt: Date.now() })
-      );
+    if (!req.files?.length) {
+      throw new Error("Upload at least one file.");
+    }
 
-      res.redirect(`/file/${req.downloadUrl}`);
-    });
-  },
-);
+    const validationError = await validateUploadedFiles(req.files);
+    if (validationError) {
+      throw new Error(validationError);
+    }
+
+    await fs.writeFile(
+      path.join(directory, "meta.json"),
+      JSON.stringify({ createdAt: Date.now() })
+    );
+
+    res.redirect(`/file/${req.downloadUrl}`);
+
+  } catch (err) {
+    await cleanupFiles(directory);
+    const message = err instanceof MulterError
+      ? `Upload Error: ${err.message}`
+      : err.message;
+    res.status(400).render("index", { error: message });
+  }
+});
 
 router.use(
   "/:downloadUrl",
