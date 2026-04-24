@@ -1,22 +1,27 @@
-# Noudes: Temporary file upload server
+# Noudes – Temporary File Upload Server
 
-The geniuses whom I've talked to at the specific computer laboratory had a mind-blowing, million-dollar idea, and they wanted to make it happen. The innovations that've been thought of were out of this world, and the potential is beyond the skies themselves. Their minds are truly unfathomable, and I am but a speck of it in their indescribable mindscapes. Their suggestions are truly a thing of beauty, and I will do my best to implement their grandiose ideas even though I am just a mortal.
+A Node.js + Express backend service for uploading, storing, and sharing files with automatic expiration.
+
+## Features
+- Upload files to server storage
+- Download files via generated shareable links
+- Automatic time-based expiration and cleanup
+- File size and type validation (partial implementation of security hardening)
+
+## Tech Stack
+- Node.js
+- Express.js
 
 ## How to run
+1. Install dependencies:
+   `npm install`
 
-To run the thing, install the packages first with `npm install`
-then run it either `npm run start` or `nodemon` if you have it installed.
+2. Start the server:
+   `npm run start`
+   or
+   `nodemon` (if installed)
 
-Features that I want this thing to have:
+3. Server runs on default port `3000`
 
-- [x] upload file
-- [x] save file to storage
-- [x] download file from storage
-- [x] shareable download link
-- [x] add time limit to uploaded files so the storage wont max itself out
-- [x] system "hardening" (sus ahh statement) p.s. partial work
-- [ ] add AI because it is the new tech /j
-- [ ] other features if i want to look busy or smth idk
-
-The name is definitely not insinuating on something. If it does, you are
-clearly overthinking it.
+## Notes
+This project focuses on backend file handling, lifecycle management, and basic security validation.
