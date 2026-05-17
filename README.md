@@ -6,7 +6,7 @@ A Node.js + Express backend service for uploading, storing, and sharing files wi
 - Upload files to server storage
 - Download files via generated shareable links
 - Automatic time-based expiration and cleanup
-- File size and type validation (partial implementation of security hardening)
+- File type validation via magic byte inspection (not solely HTTP headers), directory traversal prevention, and rate limiting
 
 ## Tech Stack
 - Node.js
